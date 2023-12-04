@@ -1,0 +1,249 @@
+body {
+    background-color: #D9D2B8;
+}
+
+.container {
+    display: flex;
+}
+
+header {
+    /* display: none; */
+}
+
+
+.toolbar {
+    display: block;
+    text-align: center;
+    background-color: #5F6F52;
+    margin: 5px 0px;
+    padding: 4px;
+    position: sticky;
+    top: 0;
+    z-index: 0; /* Set a high z-index value if needed */
+    border-radius: 10px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+
+}
+
+#merge_button {
+    display: inline-block;
+    background-color: #5F6F52;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.sidebar {
+    background-color: #5F6F52;
+    color: #fff;
+    height: 770px; /* Set a fixed height to the sidebar */
+    overflow: auto; /* Allow for scrolling when content exceeds the fixed height */
+    position: fixed;
+    border-radius: 10px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+
+
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px; /* Add padding to avoid content overlapping with the sidebar */
+    margin-left: 180px;
+    text-align: center;
+}
+
+/* Media query for screens with a max-width of 768px */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%; /* Make the sidebar full width */
+    }
+}
+
+li {
+    list-style-type: none;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+header ul {
+    display: inline;
+}
+
+header li {
+    display: inline;
+}
+
+img {
+    margin: 10px;
+}
+
+#pdf-canvas {
+    width: 800px;
+    
+}
+
+#canvas {
+    width: 800px;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.6);
+
+}
+
+#text-layer { 
+    position: absolute;
+     left: 0;
+     top: 0;
+     right: 0;
+     bottom: 0;
+     overflow: hidden;
+     opacity: 0.2;
+     line-height: 1.0;
+ }
+ 
+ #text-layer > div {
+     color: transparent;
+     position: absolute;
+     white-space: pre;
+     cursor: text;
+     transform-origin: 0% 0%;
+ }
+
+
+#page-thumbnails img:hover {
+    cursor: grab;
+}
+
+#page-thumbnails img:active {
+    cursor: grabbing;
+}
+
+#page-thumbnails button#delete {
+    position: absolute;
+    left: 50%;
+    /* top: 50%;
+    left: 50%; */
+    transform: translate(20%, 350%);
+    padding: 3px 6px;
+    background-color:#5F6F52;
+    color: #FEFAE0;
+    border-radius: 5px;
+    background-image: url(trash.png);
+   background-repeat: no-repeat;
+   background-position: center;
+   height: 36px;
+   width: 36px;
+   box-shadow: 0 6px 6px rgba(0, 0, 0, 0.6);
+   cursor: pointer; 
+   opacity: 0.4;
+}
+
+#page-thumbnails button#delete:hover {
+    opacity: 0.8;
+}
+
+#page-thumbnails button#download {
+    position: absolute;
+    left: 50%;
+    /* top: 50%;
+    left: 50%; */
+    transform: translate(-120%, 350%);
+    padding: 3px 6px;
+    background-color:#5F6F52;
+    color: #FEFAE0;
+    border-radius: 5px;
+    background-image: url(download-arrow.png);
+   background-repeat: no-repeat;
+   background-position: center;
+   height: 36px;
+   width: 36px;
+   box-shadow: 0 6px 6px rgba(0, 0, 0, 0.6);
+   cursor: pointer; 
+   opacity: 0.4;
+}
+
+#page-thumbnails button#download:hover {
+    opacity: 0.8;
+}
+
+#toolbar-button {
+    display: inline-block;
+    background-color: #5F6F52;
+    border-radius: 10px;
+    padding: 2px;
+}
+
+#merge_button {
+    width: 100px;
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack icon and text in a column */
+    align-items: center; /* Center items horizontally */
+    border-radius: 10px;
+    background-color: #A9B388;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+    padding: 1px; /* Adjust padding as needed */
+}
+
+#save_button {
+    width: 100px;
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack icon and text in a column */
+    align-items: center; /* Center items horizontally */
+    border-radius: 10px;
+    background-color: #A9B388;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+    padding: 1px; /* Adjust padding as needed */
+}
+
+#extract_button {
+    width: 100px;
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack icon and text in a column */
+    align-items: center; /* Center items horizontally */
+    border-radius: 10px;
+    background-color: #A9B388;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+    padding: 1px; /* Adjust padding as needed */
+}
+
+#button-icon {
+    width: 32px;
+    height: 32px;
+}
+
+#tb-btn-text {
+    font-size: small;
+    display: inline-block;
+    margin-top: 1px; /* Add some spacing between icon and text */
+    margin-bottom: 2px;
+    color: #FEFAE0;
+}
+
+#merge_button:hover #tb-btn-text, #extract_button:hover #tb-btn-text, #save_button:hover #tb-btn-text {
+    background-color: #A9B388;
+    color: #5F6F52;
+    margin: 2px;
+}
+
+#merge_button:active {
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.0);
+}
+#extract_button:active {
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.0);
+}
+#save_button:active{
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.0);
+}
+
+
+button {
+    all: unset;
+    cursor: pointer;
+}
+
+.sidebar img {
+    width: 159px;
+    height: 206px;
+}

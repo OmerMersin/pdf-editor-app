@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-COMPATİBLE" content="IE-edge">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="register.css">
+    <script src="https://kit.fontawesome.com/f1490aeffb.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <div action="">
+            <h1>Register</h1>
+            <div class="input-box">
+                <input type="text" placeholder="Username" required>
+                <i class="fa-solid fa-user" style="color: #000000;"></i>
+            </div>
+            <div class="input-box">
+                <input type="email" id="email" placeholder="Email" required>
+                <i class="fa-solid fa-envelope" style="color: #000000;"></i>
+            </div>
+            <div class="input-box">
+                <input type="password" id="password" placeholder="Password" required>
+                <i class="fa-solid fa-lock" style="color: #000000;"></i>
+            </div>
+            <div class="remember-forgot">
+                <label><input type="checkbox">I agree to the terms & conditions</label>
+            </div>
+            <button type="submit" id="register" class="btn">Register</button>
+            <button type="submit" id="googleLogin" name="googleLogin" class="btn">Log in with google</button>
+            <div class="register-link">
+                <p>Already have an account <a href="login.html">Login</a></p>
+            </div>
+        </div>
+    </div>     
+</body>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCSg8iM_Nc-s5ZUC12kqxcZ8D642jZXk04",
+      authDomain: "pdf-editor-5f9cc.firebaseapp.com",
+      databaseURL: "https://pdf-editor-5f9cc-default-rtdb.firebaseio.com",
+      projectId: "pdf-editor-5f9cc",
+      storageBucket: "pdf-editor-5f9cc.appspot.com",
+      messagingSenderId: "982208547663",
+      appId: "1:982208547663:web:d84014efd765c5a894133a",
+      measurementId: "G-490EHCY889"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+    console.log(app);
+
+    
+
+    //----- New Registration code start	  
+    document.getElementById("register").addEventListener("click", function(event) {
+        event.preventDefault();
+       
+        var email =  document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        //For new registration
+        createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in 
+          const user = userCredential.user;
+          console.log(user);
+          alert("Registration successfully!!");
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // ..
+          console.log(errorMessage);
+          alert(error);
+        });		  		  
+    });
+    //----- End
+
+
+  </script>
+</html>

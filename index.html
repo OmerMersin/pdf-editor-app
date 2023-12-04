@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF EDITOR</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://kit.fontawesome.com/f1490aeffb.js" crossorigin="anonymous"></script>
+    <script src="index.js"></script>
+
+</head>
+<body class="body">
+    <header>
+        <div class="navbar">
+                <div class="logo">
+                    <h2><a href='#'>PDF EDITOR</a></h2>
+                </div>
+                <div class="header-menu">
+                    <ul class="nav-links">
+                        <li><a href='#'>MERGE PDF</a></li>
+                        <li><a href='#'>EXTRACT PAGES</a></li>
+                        <li class="dropdown"> <!-- Açılır menü için class ekleniyor -->
+                            <a href="#" class="dropbtn">CONVERT PDF <i class="fas fa-caret-down"></i></a>
+                            <div class="dropdown-content"> <!-- Açılır menü içeriği -->
+                                <a href="#">Tool 1</a>
+                                <a href="#">Tool 2</a>
+                                <a href="#">Tool 3</a>
+                            </div>
+                        </li>
+                        <li class="dropdown"> <!-- Açılır menü için class ekleniyor -->
+                            <a href="#" class="dropbtn">ALL PDF TOOLS <i class="fas fa-caret-down"></i></a>
+                            <div class="dropdown-content"> <!-- Açılır menü içeriği -->
+                                <a href="#">Tool 1</a>
+                                <a href="#">Tool 2</a>
+                                <a href="#">Tool 3</a>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="login.html" class='login' onclick="document.getElementById('login-form').style.display='block'" style="width:auto;">Login</a>
+                        </li>
+                    </ul>
+                </div>
+        </div>
+    </header>
+
+    <section id="anasayfa" class="anasayfa">
+        <div class="center-box">
+            <div class="inner-box" onclick="dosyaInput.click()">
+                <label for="dosya" class="dosya-label">
+                    <span class="inner-box">SELECT FİLE</span>
+                    <input type="file" name="dosya" id="dosya" accept=".pdf" onchange="uploadFile()" style="display: none;">
+                </label>
+            </div>
+            <div class="inner-box-moved">
+                <h1 class="animate__animated animate__fadeInDown">
+                    PDF EDİTOR
+                    <span class="pdf-file-icon">
+                        <img src="img/pdfFileIcon.svg" alt="">
+                    </span>
+                </h1>
+            </div>         
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="about">
+            <div class="container">
+                <div class="about-title">
+                    <h2>PDF'LERİNİZİ KOLAY YOLDAN DÜZENLEYİN</h2>
+                </div>
+                <div class="about-content">
+                    <div class="about-img">
+                        <img src="img/07.jpg" alt="">
+                    </div>
+                    <div class="about-text">
+                        <h4>OUR STORY</h4>
+                        <div id="asterisk">
+                            <i class="fas fa-asterisk"></i>
+                        </div>
+                        <p>Belgelerle çalışmak karmaşık bir uğraş olmamalıdır. Bu yüzden, profesyonel belgelerinizle istediğiniz her şeyi yapma özgürlüğüne ve esnekliğine sahip olabilmeniz için PDF düzenleme sürecini basitleştirdik. </p>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="about">
+            <div class="container">
+                <div class="about-title">
+                    <h2>PDF'LERİNİZİ KOLAY YOLDAN DÜZENLEYİN</h2>
+                </div>
+                <div class="about-content">
+                    <div class="pdf-img">
+                        <img src="img/04.jpg" alt="">
+                    </div>
+                    <div class="about-text">
+                        <h4>OUR STORY</h4>
+                        <div id="asterisk">
+                            <i class="fas fa-asterisk"></i>
+                        </div>
+                        <p>Belgelerle çalışmak karmaşık bir uğraş olmamalıdır. Bu yüzden, profesyonel belgelerinizle istediğiniz her şeyi yapma özgürlüğüne ve esnekliğine sahip olabilmeniz için PDF düzenleme sürecini basitleştirdik. </p>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio">
+        <div class="portfolio">
+            <div class="portfolio-item">
+                <img src="img/01.jpg" alt=""> 
+                <div class="overlay">
+                    <i class="fa-solid fa-file"></i>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="img/02.jpg" alt=""> 
+                <div class="overlay">
+                    <i class="fa-regular fa-file"></i>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="img/03.jpg" alt=""> 
+                <div class="overlay">
+                    <i class="fa-solid fa-file"></i>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="img/04.jpg" alt=""> 
+                <div class="overlay">
+                    <i class="fa-regular fa-file"></i>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="img/05.jpg" alt=""> 
+                <div class="overlay">
+                    <i class="fa-solid fa-file"></i>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="img/06.jpg" alt=""> 
+                <div class="overlay">
+                    <i class="fa-regular fa-file"></i>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="img/07.jpg" alt=""> 
+                <div class="overlay">
+                    <i class="fa-solid fa-file"></i>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="img/08.jpg" alt=""> 
+                <div class="overlay">
+                    <i class="fa-regular fa-file"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="about">
+            <div class="container">
+                <div class="about-title">
+                    <h2>PDF'LERİNİZİ KOLAY YOLDAN DÜZENLEYİN</h2>
+                </div>
+                <div class="about-content">
+                    <div class="pdf-img">
+                        <img src="img/05.jpg" alt="">
+                    </div>
+                    <div class="about-text">
+                        <h4>OUR STORY</h4>
+                        <div id="asterisk">
+                            <i class="fas fa-asterisk"></i>
+                        </div>
+                        <p>Belgelerle çalışmak karmaşık bir uğraş olmamalıdır. Bu yüzden, profesyonel belgelerinizle istediğiniz her şeyi yapma özgürlüğüne ve esnekliğine sahip olabilmeniz için PDF düzenleme sürecini basitleştirdik. </p>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="about">
+            <div class="container">
+                <div class="about-title">
+                    <h2>PDF'LERİNİZİ KOLAY YOLDAN DÜZENLEYİN</h2>
+                </div>
+                <div class="about-content">
+                    <div class="pdf-img">
+                        <img src="img/01.jpg" alt="">
+                    </div>
+                    <div class="about-text">
+                        <h4>OUR STORY</h4>
+                        <div id="asterisk">
+                            <i class="fas fa-asterisk"></i>
+                        </div>
+                        <p>Belgelerle çalışmak karmaşık bir uğraş olmamalıdır. Bu yüzden, profesyonel belgelerinizle istediğiniz her şeyi yapma özgürlüğüne ve esnekliğine sahip olabilmeniz için PDF düzenleme sürecini basitleştirdik. </p>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
+

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-COMPATİBLE" content="IE-edge">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="login.css">
+    <script src="https://kit.fontawesome.com/f1490aeffb.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <div action="">
+            <h1>Login</h1>
+            <div class="input-box">
+                <input type="text" id="login_email" name="login_email" placeholder="E-mail" required>
+                <i class="fa-solid fa-user" style="color: #000000;"></i>
+            </div>
+            <div class="input-box">
+                <input type="password" id="login_password" name="login_password" placeholder="Password" required>
+                <i class="fa-solid fa-lock" style="color: #000000;"></i>
+            </div>
+            <div class="remember-forgot">
+                <label><input type="checkbox">Remember me</label>
+                <a href="#">Forgot your password?</a>
+            </div>
+            <button type="submit" id="login" name="login" class="btn">Log in</button>
+            <button type="submit" id="googleLogin" name="googleLogin" class="btn">Log in with google</button>
+            <div class="navbar-collapse collapse"  >
+                <ul class="nav navbar-nav navbar-right">
+                     <li><a href="#" id="logout" style="display: none;">Log Out</a></li>
+                </ul>
+            </div>
+            <div class="register-link">
+                <p>Don't have an account? <a href="register.html">Register</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+    //import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCSg8iM_Nc-s5ZUC12kqxcZ8D642jZXk04",
+      authDomain: "pdf-editor-5f9cc.firebaseapp.com",
+      databaseURL: "https://pdf-editor-5f9cc-default-rtdb.firebaseio.com",
+      projectId: "pdf-editor-5f9cc",
+      storageBucket: "pdf-editor-5f9cc.appspot.com",
+      messagingSenderId: "982208547663",
+      appId: "1:982208547663:web:d84014efd765c5a894133a",
+      measurementId: "G-490EHCY889"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+	const analytics = getAnalytics(app);
+	const auth = getAuth();
+	console.log(app);
+
+
+    document.getElementById("login").addEventListener("click", function() {
+		  var email =  document.getElementById("login_email").value;
+		  var password = document.getElementById("login_password").value;
+
+		  signInWithEmailAndPassword(auth, email, password)
+		  .then((userCredential) => {
+		    // Signed in 
+		    const user = userCredential.user;
+		    console.log(user);
+		    alert(user.email+" Login successfully!!!");
+		    document.getElementById('logout').style.display = 'block';
+		    // ...
+		  })
+		  .catch((error) => {
+		    const errorCode = error.code;
+		    const errorMessage = error.message;
+		    console.log(errorMessage);
+		    alert(errorMessage);
+		  });		  		  
+	  });
+      //----- End
+
+	  //----- Logout code start	  
+	  document.getElementById("logout").addEventListener("click", function() {
+		  signOut(auth).then(() => {
+			  // Sign-out successful.
+			  console.log('Sign-out successful.');
+			  alert('Sign-out successful.');
+			  document.getElementById('logout').style.display = 'none';
+			}).catch((error) => {
+			  // An error happened.
+			  console.log('An error happened.');
+			});		  		  
+	  });
+	  //----- End
+
+  </script>
+</html>
+

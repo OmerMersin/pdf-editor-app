@@ -1,0 +1,117 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+}
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-image: radial-gradient(circle, #1c3879, #446298, #708db4, #a3bad0, #dde6ed);
+}
+
+.wrapper {
+    width: 420px;
+    background: transparent;
+    border: 2px solid #1C3879;
+    box-shadow: 0 0 10px #1C3879;
+    color:  #1C3879;
+    border-radius: 15px;
+    padding: 30px 40px;
+    background-color: #F1F6F9;
+}
+
+.wrapper h1 {
+    font-size: 36px;
+    text-align: center;
+}
+
+.wrapper .input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid #1C3879;
+    border-radius: 40px;
+    font-size: 16x;
+    color: #1C3879;
+    padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder {
+    color: rgb(121, 147, 188);
+}
+
+.input-box i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+
+.wrapper .remember-forgot {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14.5px;
+    margin: -15px 0 15px;
+    padding: 20px 45px 20px 0;
+}
+
+.remember-forgot label input {
+    accent-color: #1C3879;
+    margin-right: 3px;
+}
+
+.remember-forgot a {
+    color: #1C3879;
+    text-decoration: none;
+}
+
+.remember-forgot a:hover {
+    text-decoration: underline;
+}
+
+.wrapper .btn {
+    width: 100%;
+    height: 45px;
+    background: #1C3879;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px #1C3879;
+    cursor: pointer;
+    font-size: 16px;
+    color:#F1F6F9;
+    font-weight: 600;
+    padding: 10px;
+    margin: 10px;
+}
+
+.wrapper .register-link {
+    font-size: 14.5px;
+    text-align: center;
+    margin: 20px 0 15px;
+}
+
+.register-link p a {
+    color: #1C3879;
+    text-decoration: none;
+    font-weight: 600;
+}
+.register-link p a:hover {
+    text-decoration: underline;
+}
