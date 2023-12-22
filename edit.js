@@ -1,3 +1,5 @@
+// MAKE RENDERSIDE FUNC THINK FOR THE ORDER IN PAGES
+
 //############################### INITILIZE ######################################### 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf-js/build/pdf.worker.js';
 
@@ -14,15 +16,27 @@ const zoomOut = document.getElementById('zoom_out');
 const saveBtn = document.getElementById('save_button');
 const mergeBtn = document.getElementById('merge_button');
 const extractBtn = document.getElementById('extract_button');
+const undoBtn = document.getElementById('undo_button');
+const redoBtn = document.getElementById('redu_button');
+
 let pdfFile;
+let pdfList = []; // Array to store PDF buffers
+
 
 var numPages = 0;
+// merged - true - save - merge db - pages list - download;
 
-const targetDpi = 300; // Set your target DPI (dots per inch)
+
+
+let processList = [];
+let deletedPagesList = [];
+
+
+const targetDpi = 450; // Set your target DPI (dots per inch)
 const targetScale = targetDpi / 72.0; // PDF.js uses 72 DPI as the default
 
-const receivedValue = localStorage.getItem('dataToSend');
-let fileName = receivedValue;
+var receivedValue = localStorage.getItem('dataToSend');
+// let fileName = receivedValue;
 
 // ############################# RUN TIME SIZES #####################################
 
@@ -62,56 +76,96 @@ let pages = []
 
 async function loadPdf(fileName) {
 	try {
-	  const response = await fetch(`http://localhost:8080/downloadPdf/${fileName}`);
-  
-	  if (response.ok) {
-		const arrayBuffer = await response.arrayBuffer();
-		pdfFile = arrayBuffer;
-		console.log('Type of pdfFile:', Object.prototype.toString.call(pdfFile));
-		console.log('Size of pdfFile:', pdfFile.byteLength);
-		return arrayBuffer;
-	  } else {
-		console.error('Error getting PDF from database:', response.statusText);
-		return null;
-	  }
-	} catch (error) {
-	  console.error('Error getting PDF from database:', error);
-	  return null;
-	}
-  }
+        const loadingScreen = document.getElementById("loading-screen");
+        loadingScreen.style.display = "flex";
 
-  window.onload = async function () {
-	// fileName = "sample";
-	
-	const arrayBuffer = await loadPdf(fileName);
-	console.log(fileName);
-	if (arrayBuffer) {
-	  initializePdf(arrayBuffer);
-	} else {
-	  console.error('Error loading PDF. Using default PDF.');
-	  initializePdf(null);
-	}
-  };
+        const response = await fetch(`http://localhost:8080/downloadPdf/${fileName}`);
+
+        if (response.ok) {
+            const arrayBuffer = await response.arrayBuffer();
+            console.log('Type of pdfFile:', Object.prototype.toString.call(arrayBuffer));
+            console.log('Size of pdfFile:', arrayBuffer.byteLength);
+            return arrayBuffer;
+        } else {
+            console.error('Error getting PDF from database:', response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error getting PDF from database:', error);
+        return null;
+    }
+}
+
+window.onload = async function () {
+	// var storedArrayBufferAsText = localStorage.getItem('lastPdf');
+	var fileName = localStorage.getItem('lastPdf');
+
+    // if (storedArrayBufferAsText) {
+    //     // Metin formatındaki değeri ArrayBuffer'a çevir
+	// 	receivedValue = fileName;
+
+    //     var storedArrayBuffer = new Uint8Array(JSON.parse(storedArrayBufferAsText)).buffer;
+	// 	console.log('Size of pdfFile:', storedArrayBuffer.byteLength);
+	// 	console.log('Content of pdfFile:', storedArrayBuffer);
+	// 	pdfList.push({name: fileName, content: storedArrayBuffer});
+	// 	console.log(pdfList);
+	// 	console.log(pdfList[0]);
+
+
+    //     // Şimdi storedArrayBuffer, kullanılabilir bir ArrayBuffer
+    //     initializePdf(storedArrayBuffer);
+	// 	return 0;
+    // }
+	try {
+        // const fileName = "sample"; // Replace with the actual file name
+		receivedValue = fileName;
+        console.log(receivedValue);
+        
+        const arrayBuffer = await loadPdf(receivedValue);
+		pdfList.push({name: receivedValue, content: await loadPdf(receivedValue)});
+        
+        if (arrayBuffer) {
+			var view = new DataView(arrayBuffer);
+			view.setUint8(0, 42);
+
+			// ArrayBuffer'ı metin formatına dönüştür
+			var arrayBufferAsText = JSON.stringify(Array.from(new Uint8Array(arrayBuffer)));
+
+			// localStorage'a kaydet
+			localStorage.setItem('lastPdfName', receivedValue);
+			localStorage.setItem('lastPdf', arrayBufferAsText);
+            initializePdf(arrayBuffer);
+			const loadingScreen = document.getElementById("loading-screen");
+			loadingScreen.style.display = "none";
+        } else {
+            console.error('Error loading PDF. Using default PDF.');
+            initializePdf(null);
+        }
+    } finally {
+		console.log();
+    }
+};
 
 async function initializePdf(pdfBuffer) {
-	try {
-		pdfDocument = await pdfjsLib.getDocument({
-			data: pdfBuffer
-		}).promise;
-		initialState.pdfDoc = pdfDocument;
-		pageCount.textContent = initialState.pdfDoc.numPages;
+    try {
+        pdfDocument = await pdfjsLib.getDocument({ data: pdfBuffer }).promise;
+        initialState.pdfDoc = pdfDocument;
+        pageCount.textContent = initialState.pdfDoc.numPages;
 
-		pages = [];
-		for (let pageNumber = 1; pageNumber <= initialState.pdfDoc.numPages; pageNumber++) {
-			pages.push(pageNumber);
-		}
+        pages = [];
+        for (let pageNumber = 1; pageNumber <= initialState.pdfDoc.numPages; pageNumber++) {
+            pages.push(pageNumber);
+        }
 
-		renderPage();
-		renderSide(pdfDocument);
-	} catch (err) {
-		console.error('Error initializing PDF:', err);
-		alert(err.message);
-	}
+        renderPage();
+        renderSide(pdfDocument);
+
+        return Promise.resolve(pdfDocument); // Resolve the promise with the pdfDocument
+    } catch (err) {
+        console.error('Error initializing PDF:', err);
+        alert(err.message);
+        return Promise.reject(err); // Reject the promise if an error occurs
+    }
 }
 
 // #####################################################################################
@@ -154,6 +208,7 @@ const renderPage = () => {
 function renderSide(pdfDocument) {
 	// Use the passed pdfDocument instead of the global variable
 	const numPages = pdfDocument.numPages;
+	console.log("aaaaa"+numPages);
 	const fragment = document.createDocumentFragment();
 	console.log('Number of pages:', numPages);
 	console.log('Number of pages:', pages);
@@ -177,33 +232,38 @@ function renderSide(pdfDocument) {
 }
 
 function enableDragAndDrop() {
-    const thumbnailsList = document.getElementById('page-thumbnails');
+	const thumbnailsList = document.getElementById('page-thumbnails');
 
-    new Sortable(thumbnailsList, {
-        animation: 150,
-        onEnd: updateThumbnailOrder,
-    });
+	new Sortable(thumbnailsList, {
+		animation: 150,
+		onEnd: updateThumbnailOrder,
+	});
 }
 
 function updateThumbnailOrder() {
-    const thumbnails = document.querySelectorAll('#page-thumbnails li');
-    const updatedPages = Array.from(thumbnails).map(thumbnail => {
-        const pageNumber = parseInt(thumbnail.id.split('-').pop());
-        return pageNumber;
-    });
+	const previousPages = [...pages];
 
-    // Update the 'pages' array or any data structure you use to track the order
-    pages = updatedPages;
+	const thumbnails = document.querySelectorAll('#page-thumbnails li');
+	const updatedPages = Array.from(thumbnails).map(thumbnail => {
+		const pageNumber = parseInt(thumbnail.id.split('-').pop());
+		return pageNumber;
+	});
+
+	// Update the 'pages' array or any data structure you use to track the order
+	pages = updatedPages;
 	console.log(pages)
+	addProcess('Change Page Order', { previousOrder: previousPages });
 
-    // Render the PDF with the new order
-    // renderPdf();
+
+	// Render the PDF with the new order
+	// renderPdf();
 }
 
 
 function createPageThumbnail(pageNumber) {
 	const listItem = document.createElement('li');
 	listItem.id = `thumbnail-item-${pageNumber}`;
+	console.log("asdadasdas"+pdfDocument.numPages)
 
 
 	pdfDocument.getPage(pageNumber).then((page) => {
@@ -267,45 +327,46 @@ function createButton(id, text, onClick) {
 //############################### DELETE PAGES #####################################
 
 function deletePage(pageNumber) {
-	// Remove the page number from the 'pages' array
-	let indexToDelete = pages.indexOf(pageNumber);
+    // Remove the page number from the 'pages' array
+    let indexToDelete = pages.indexOf(pageNumber);
 
-	// Check if the element exists in the array
-	if (indexToDelete !== -1) {
-		// Use splice to remove the element
-		pages.splice(indexToDelete, 1);
-		console.log(`Element ${pageNumber} deleted. New array:`, pages);
-	} else {
-		console.log(`Element ${pageNumber} not found in the array.`);
-	}
+    // Check if the element exists in the array
+    if (indexToDelete !== -1) {
+        // Use splice to remove the element
+        pages.splice(indexToDelete, 1);
+        console.log(`Element ${pageNumber} deleted. New array:`, pages);
 
-	// Remove the corresponding list item from the 'pageThumbnails' container
-	const thumbnailItem = document.getElementById(`thumbnail-item-${pageNumber}`);
-	if (thumbnailItem) {
-		thumbnailItem.remove();
-	}
-	console.log(currentPage + " " + pageNumber + " " + pageCount)
-	if (currentPage.value == 1 && pageNumber == 1) {
+        // Remove the corresponding list item from the 'pageThumbnails' container
+        const thumbnailItem = document.getElementById(`thumbnail-item-${pageNumber}`);
+        if (thumbnailItem) {
+            thumbnailItem.remove();
+        }
 
-		if (pdfDocument) {
-			numPages = pdfDocument.numPages;
-			console.log(`Number of pages: ${numPages}`);
-		} else {
-			console.error('PDF document not loaded.');
-		}
-		currentPage.value = initialState.currentPage;
-	} else if (currentPage.value == numPages && pageNumber == numPages) {
-		initialState.currentPage--;
-		currentPage.value = initialState.currentPage;
+        if (currentPage.value == 1 && pageNumber == 1) {
+            if (pdfDocument) {
+                numPages = pdfDocument.numPages;
+                console.log(`Number of pages: ${numPages}`);
+            } else {
+                console.error('PDF document not loaded.');
+            }
+            currentPage.value = initialState.currentPage;
+        } else if (currentPage.value == numPages && pageNumber == numPages) {
+            initialState.currentPage--;
+            currentPage.value = initialState.currentPage;
+        }
 
-	}
+        addProcess('Delete Page', { pageNumber: pageNumber });
+        deletedPagesList.push({ pageNumber: pageNumber, index: indexToDelete });
+        renderPage();
 
-	renderPage();
-	initialState.pdfDoc._pdfInfo.numPages -= 1;
-	currentPage.value = initialState.currentPage - 1;
-	pageCount.textContent -= 1;
-
+        return true; // Return true indicating successful deletion
+    } else {
+        console.log(`Element ${pageNumber} not found in the array.`);
+        alert(`Page ${pageNumber} does not exist.`);
+        return false; // Return false indicating that the page does not exist
+    }
 }
+
 
 // #####################################################################################
 
@@ -539,36 +600,48 @@ zoomOut.addEventListener('click', () => {
 	renderPage();
 });
 
-
 saveBtn.addEventListener('click', async function () {
+	if (pdfList.length > 1) {
+		var requestOptions = {
+			method: 'POST',
+			redirect: 'follow'
+		};
+
+		const response = await fetch(`http://localhost:8080/mergeAndReturnPdf/${pdfList[0].name}/${pdfList[1].name}`, requestOptions);
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+
+		const mergedPdfBlob = await response.blob();
+		pdfList[0].content = await new Response(mergedPdfBlob).arrayBuffer();
+
+		console.log("SUCCESS");
+	}
     try {
-        if (pdfDocument) {
-            // Save the complete PDF document as ArrayBuffer
-            const fullPdfBuffer = await pdfDocument.getData();
+        // Check if pdfDocument is loaded
+        const loadedPdfDocument = await initializePdf(pdfList[0].content);
+        if (loadedPdfDocument) {
+            const pdfData = await loadedPdfDocument.getData();
+            const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
 
-            // Get the list of pages you want to send to the server
-            // const selectedPages = [1, 2, 3]; // Replace with your logic to get the selected pages
-
-            // Create a FormData object to send both the PDF file and the list of pages
-            const formData = new FormData();
-            formData.append('pdfFile', new Blob([fullPdfBuffer], { type: 'application/pdf' }), 'full_document.pdf');
-            formData.append('pageOrder', JSON.stringify(selectedPages));
-
-            // Send a POST request to the server endpoint
-            const response = await fetch(`http://localhost:8080/downloadSortedPdf/sample`, {
-                method: 'POST',
-                body: formData
-            });
-
-            if (response.ok) {
-                // Handle the successful response, e.g., show a success message
-                console.log('PDF saved successfully with selected pages.');
-            } else {
-                // Handle the error response, e.g., show an error message
-                console.error('Error saving PDF:', response.statusText);
+            if (window.pdfBlobUrl) {
+                URL.revokeObjectURL(window.pdfBlobUrl);
             }
+
+            window.pdfBlobUrl = URL.createObjectURL(pdfBlob);
+
+            const downloadLink = document.createElement('a');
+            downloadLink.href = window.pdfBlobUrl;
+            downloadLink.download = 'downloaded_file.pdf';
+
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+
+            console.log('PDF saved successfully.');
         } else {
-            console.error('PDF document not available.');
+            console.error('No PDF document loaded.');
         }
     } catch (error) {
         console.error('Error saving PDF:', error);
@@ -577,7 +650,7 @@ saveBtn.addEventListener('click', async function () {
 
 
 
-mergeBtn.addEventListener('click', function () {
+mergeBtn.addEventListener('click', async function () {
     const fileInput = document.getElementById('fileInput');
     fileInput.value = '';
     fileInput.click();
@@ -585,80 +658,74 @@ mergeBtn.addEventListener('click', function () {
 
 fileInput.addEventListener('change', async function () {
     const selectedFiles = fileInput.files;
+    const file = fileInput.files[0];
+    const fileName2 = file.name.replace(/\.[^/.]+$/, "");
 
-    if (selectedFiles.length > 0) {
-        const arrayBuffer = await selectedFiles[0].arrayBuffer();
-        const arrayBuffer2 = await loadPdf("sample");
+    if (file) {
+		const arrayBuffer = await selectedFiles[0].arrayBuffer();
+		secondPdfBuffer = arrayBuffer; // Store the second PDF in the variable
+		pdfList.push({ name: fileName2, content: secondPdfBuffer });
 
-        const mergedPdfBuffer = await mergePDFs(pdfFile, arrayBuffer);
+		if (pdfList.length > 1) {
+			const formData = new FormData();
+			formData.append('fileName', pdfList[1].name);
+			// formData.append('file', pdfList[1].content, pdfList[1].name);
+			const contentBlob = new Blob([pdfList[1].content], { type: 'application/pdf' });
+			formData.append('file', contentBlob, pdfList[1].name);
+	
+			fetch('http://localhost:8080/uploadPdf', {
+				method: 'POST',
+				body: formData
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`File upload failed with status: ${response.status}`);
+				}
+				return response.text(); // Parse response as text
+			})
+		}
 
-        if (mergedPdfBuffer) {
-            updateMergedPdf(mergedPdfBuffer);
-        }
-    }
+		const mergedPdfBuffer = await mergePDFs(pdfList[0].content, pdfList[1].content);
+		await initializePdf(mergedPdfBuffer); // Wait for initializePdf to complete
+		renderPage();
+		renderSide(pdfDocument);
+	} else {
+		console.error('No file selected.');
+	}
 });
 
-async function mergePDFs(pdf, pdfAdded) {
-    const {
-        PDFDocument
-    } = PDFLib;
+async function mergePDFs(pdf1, pdf2) {
+	const { PDFDocument } = PDFLib;
+
     try {
-        // Load existing PDF
-        const pdfDoc = await PDFDocument.load(pdf);
+        // Load the PDF buffers into PDFDocument objects
+        const pdfDoc1 = await PDFDocument.load(pdf1);
+        const pdfDoc2 = await PDFDocument.load(pdf2);
 
-        // Load PDF to be added
-        const pdfAddedDoc = await PDFDocument.load(pdfAdded);
+        // Create a new PDFDocument to merge the pages
+        const mergedPdfDoc = await PDFDocument.create();
 
-        // Add pages from pdfAddedDoc to pdfDoc
-        const pdfAddedPages = await pdfDoc.copyPages(pdfAddedDoc, pdfAddedDoc.getPageIndices());
-        pdfAddedPages.forEach((page) => pdfDoc.addPage(page));
+        // Add all pages from the first PDF
+        for (let i = 0; i < pdfDoc1.getPageCount(); i++) {
+            const [page] = await mergedPdfDoc.copyPages(pdfDoc1, [i]);
+            mergedPdfDoc.addPage(page);
+        }
 
-        // Serialize the merged PDF
-        const mergedPdfBytes = await pdfDoc.save();
+        // Add all pages from the second PDF
+        for (let i = 0; i < pdfDoc2.getPageCount(); i++) {
+            const [page] = await mergedPdfDoc.copyPages(pdfDoc2, [i]);
+            mergedPdfDoc.addPage(page);
+        }
 
-        // Return the merged PDF as ArrayBuffer
-        return new Uint8Array(mergedPdfBytes).buffer;
+        // Save the merged PDF as ArrayBuffer
+        const mergedPdfBytes = await mergedPdfDoc.save();
+
+        return mergedPdfBytes.buffer;
     } catch (error) {
         console.error('Error merging PDFs:', error);
         return null;
     }
 }
-
-function updateMergedPdf(mergedPdfBuffer) {
-    pdfFile = mergedPdfBuffer;
-    initializePdf(mergedPdfBuffer);
-}
-
-
-function saveOrDisplayMergedPDF(mergedPdf) {
-	if (mergedPdf) {
-		// Save the merged PDF as a file
-		const blob = new Blob([mergedPdf], {
-			type: 'application/pdf'
-		});
-
-		// Create a Blob URL for the Blob
-		const url = window.URL.createObjectURL(blob);
-
-		// Create a link element to trigger the download
-		const downloadLink = document.createElement('a');
-		downloadLink.href = url;
-		downloadLink.download = 'merged_document.pdf'; // Replace with the desired file name
-		downloadLink.style.display = 'none'; // Hide the link
-
-		// Append the link to the document
-		document.body.appendChild(downloadLink);
-
-		// Trigger the click event
-		downloadLink.click();
-
-		// Remove the link from the document
-		document.body.removeChild(downloadLink);
-	} else {
-		console.error('Error generating merged PDF.');
-	}
-}
-
 
 extractBtn.addEventListener('click', async function () {
 	const modal = document.createElement('div');
@@ -738,14 +805,20 @@ extractBtn.addEventListener('click', async function () {
 
 
 function deleteMultiplePages(pageNumbers) {
-	// Split the input into individual page numbers or ranges
-	const pagesToDelete = parsePageNumbers(pageNumbers);
+    // Split the input into individual page numbers or ranges
+    const pagesToDelete = parsePageNumbers(pageNumbers);
 
-	// Iterate through the pagesToDelete array and delete each page
-	pagesToDelete.forEach((pageNumber) => {
-		deletePage(pageNumber);
-	});
+    // Iterate through the pagesToDelete array and delete each page
+    pagesToDelete.forEach((pageNumber) => {
+        const successfullyDeleted = deletePage(pageNumber);
+
+        if (!successfullyDeleted) {
+            // Show a warning message for pages that do not exist
+            console.warn(`Page ${pageNumber} does not exist.`);
+        }
+    });
 }
+
 
 function parsePageNumbers(pageNumbers) {
 	const pagesToDelete = [];
@@ -773,4 +846,156 @@ function parsePageNumbers(pageNumbers) {
 	});
 
 	return pagesToDelete;
+}
+
+
+function uploadFile() {
+    const fileInput = document.getElementById('dosya');
+    const file = fileInput.files[0];
+    const fileName = file.name.replace(/\.[^/.]+$/, "")
+
+    if (file) {
+        const formData = new FormData();
+        formData.append('fileName', fileName); // Set your desired file name
+        formData.append('file', file);
+
+        // Make a POST request using fetch or XMLHttpRequest
+        fetch('http://localhost:8080/uploadPdf', {
+            method: 'POST',
+            body: formData
+        })
+        // .then(response => response.json())
+        .then(data => {
+            console.log('File uploaded successfully:', data);
+        })
+        .catch(error => {
+            console.error('Error uploading file:', error);
+        });
+
+        const valueToSend = fileName;
+
+        // Store the value in localStorage
+        localStorage.setItem('dataToSend', valueToSend);
+        
+        window.location.href = 'edit.html';
+
+        // window.location.href = 'edit.html';
+    } else {
+        console.error('No file selected.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const backButton = document.getElementById('back_button');
+
+    // Add a click event listener to the back button
+    backButton.addEventListener('click', function () {
+        // Ask the user for confirmation
+        const userConfirmed = window.confirm('Are you sure you want to continue?');
+
+        // If the user confirms, navigate to another HTML page
+        if (userConfirmed) {
+            window.location.href = 'index.html';
+        }
+        // If the user cancels, do nothing or handle it as needed
+    });
+});
+
+document.body.addEventListener('click', function() {
+	console.log(pages);
+	console.log(pdfList);
+	console.log(pdfList[0]);
+	// Add your desired code here
+});
+
+function addProcess(name, details) {
+    const newProcess = {
+        name: name,
+        details: details,
+        timestamp: new Date().toLocaleString() // Include a timestamp for reference
+    };
+    processList.push(newProcess);
+    console.log(`Process added: ${name}`);
+}
+
+function undoLastProcess() {
+    if (processList.length > 0) {
+        const lastProcess = processList.pop();
+        console.log(`Undoing last process: ${lastProcess.name}`);
+        // Implement logic to undo the effect of the last process
+        undoProcess(lastProcess);
+    } else {
+        console.log('No processes to undo.');
+    }
+}
+
+function undoProcess(process) {
+    if (process.name === 'Delete Page') {
+        // Implement logic to add back the deleted page
+        undoDeletePage();
+        console.log(`Restoring deleted page: ${process.details.pageNumber}`);
+    } else if (process.name === 'Edit Document') {
+        // Implement logic to revert changes in the edited document
+        console.log(`Reverting edits in document: ${process.details.docName}`);
+    } else if (process.name === 'Change Page Order') {
+        // Restore the previous order of pages
+        pages = process.details.previousOrder;
+
+        // Render the PDF with the restored order
+        renderSide(pdfDocument);
+    }
+}
+
+
+undoBtn.addEventListener('click', async function () {
+	undoLastProcess();
+});
+
+function undoDeletePage() {
+    // Check if there are deleted pages to undo
+    if (deletedPagesList.length > 0) {
+        const lastDeletedPage = deletedPagesList.pop();
+
+        // Insert the deleted page back into the 'pages' array at its original index
+        pages.splice(lastDeletedPage.index, 0, lastDeletedPage.pageNumber);
+
+        // Your additional logic to render the page thumbnails or other UI updates...
+		renderSide(pdfDocument);
+
+        console.log(`Undid deletion of page ${lastDeletedPage.pageNumber}. New array:`, pages);
+    } else {
+        console.log('No deleted pages to undo.');
+    }
+}
+
+
+// Function to reorder pages in a pdfDocument
+async function reorderPages(pdfDocument, newOrder) {
+	const { PDFDocument } = PDFLib;
+
+    try {
+        // Create a new PDFDocument to store the reordered pages
+        const reorderedPdfDoc = await PDFDocument.create();
+
+        // Iterate through the new order and copy pages to the new document
+        for (const pageNumber of newOrder) {
+			
+            // Check if the page number is within the valid range
+            if (pageNumber >= 1 && pageNumber <= pdfDocument.numPages) {
+                // Get the page from the original pdfDocument
+                const [page] = await reorderedPdfDoc.copyPages(pdfDocument, [pageNumber - 1]);
+
+                // Add the page to the reorderedPdfDoc
+                reorderedPdfDoc.addPage(page);
+            } else {
+                console.warn(`Page ${pageNumber} does not exist in the original document.`);
+            }
+        }
+
+        // Return the new PDFDocument with reordered pages
+        return reorderedPdfDoc;
+    } catch (error) {
+        console.error('Error reordering pages:', error);
+        return null;
+    }
 }

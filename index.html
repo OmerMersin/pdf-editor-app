@@ -2,18 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PDF EDITOR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>LOTUS PDF</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://kit.fontawesome.com/f1490aeffb.js" crossorigin="anonymous"></script>
-    <script src="index.js"></script>
+    <script src="/__/firebase/7.14.6/firebase-app.js"></script>
+    <script src="index.js" defer></script>
 
 </head>
 <body class="body">
     <header>
         <div class="navbar">
                 <div class="logo">
-                    <h2><a href='#'>PDF EDITOR</a></h2>
+                    <h2><a href='#'>LOTUS PDF</a></h2>
                 </div>
                 <div class="header-menu">
                     <ul class="nav-links">
@@ -35,33 +37,30 @@
                                 <a href="#">Tool 3</a>
                             </div>
                         </li>
-                        <li>
-                            <a href="login.html" class='login' onclick="document.getElementById('login-form').style.display='block'" style="width:auto;">Login</a>
-                        </li>
                     </ul>
                 </div>
         </div>
     </header>
 
-    <section id="anasayfa" class="anasayfa">
-        <div class="center-box">
-            <div class="inner-box" onclick="dosyaInput.click()">
-                <label for="dosya" class="dosya-label">
-                    <span class="inner-box">SELECT FİLE</span>
-                    <input type="file" name="dosya" id="dosya" accept=".pdf" onchange="uploadFile()" style="display: none;">
+    <div class="buyukKutu">
+        <div class="boxOne" onclick="dosyaInput.click()">
+            <div class="about">
+                <h2 class="animate__animated animate__bounce">Edit and convert your PDF document easily! Simple and Efective.</h2>
+                <label for="dosya" >
+                    <span id="fileSelectBtn">
+                        Choose File
+                    </span> 
+                    <input type="file" name="dosya" id="dosya" accept=".pdf" onchange="uploadFile()" style="display: none;">    
                 </label>
             </div>
-            <div class="inner-box-moved">
-                <h1 class="animate__animated animate__fadeInDown">
-                    PDF EDİTOR
-                    <span class="pdf-file-icon">
-                        <img src="img/pdfFileIcon.svg" alt="">
-                    </span>
-                </h1>
-            </div>         
+            
         </div>
-    </section>
-
+        <div class="boxTwo">
+            <button id="loginBtn">Login</button>
+            <button id="registerBtn">Register</button>
+        </div>
+    </div>
+    
     <section id="about">
         <div class="about">
             <div class="container">
@@ -105,7 +104,6 @@
             </div>
         </div>
     </section>
-
     <section id="portfolio">
         <div class="portfolio">
             <div class="portfolio-item">
@@ -156,7 +154,6 @@
                     <i class="fa-regular fa-file"></i>
                 </div>
             </div>
-        </div>
     </section>
 
     <section id="about">
@@ -202,7 +199,19 @@
             </div>
         </div>
     </section>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          // Login butonu için yönlendirme
+          document.getElementById("loginBtn").addEventListener("click", function() {
+            window.location.href = "login.html";
+          });
+    
+          // Register butonu için yönlendirme
+          document.getElementById("registerBtn").addEventListener("click", function() {
+            window.location.href = "register.html";
+          });
+        });
+      </script>
 </body>
-
 </html>
 

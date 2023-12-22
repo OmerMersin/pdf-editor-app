@@ -1,5 +1,5 @@
 body {
-    background-color: #D9D2B8;
+    background: radial-gradient(circle at center, #fa7831, #fff7cb 70%, #f19b9b);
 }
 
 .container {
@@ -14,7 +14,7 @@ header {
 .toolbar {
     display: block;
     text-align: center;
-    background-color: #5F6F52;
+    background-color: #282CAF;
     margin: 5px 0px;
     padding: 4px;
     position: sticky;
@@ -36,9 +36,10 @@ header {
 
 
 .sidebar {
-    background-color: #5F6F52;
+    background-color: #282CAF;
     color: #fff;
     height: 770px; /* Set a fixed height to the sidebar */
+    width: 179px;
     overflow: auto; /* Allow for scrolling when content exceeds the fixed height */
     position: fixed;
     border-radius: 10px;
@@ -127,7 +128,7 @@ img {
     left: 50%; */
     transform: translate(20%, 350%);
     padding: 3px 6px;
-    background-color:#5F6F52;
+    background-color:#f45353;
     color: #FEFAE0;
     border-radius: 5px;
     background-image: url(trash.png);
@@ -151,7 +152,7 @@ img {
     left: 50%; */
     transform: translate(-120%, 350%);
     padding: 3px 6px;
-    background-color:#5F6F52;
+    background-color:#9B9BF1;
     color: #FEFAE0;
     border-radius: 5px;
     background-image: url(download-arrow.png);
@@ -170,7 +171,7 @@ img {
 
 #toolbar-button {
     display: inline-block;
-    background-color: #5F6F52;
+    background-color: #4747f8;
     border-radius: 10px;
     padding: 2px;
 }
@@ -181,7 +182,7 @@ img {
     flex-direction: column; /* Stack icon and text in a column */
     align-items: center; /* Center items horizontally */
     border-radius: 10px;
-    background-color: #A9B388;
+    background-color: #9B9BF1;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
     padding: 1px; /* Adjust padding as needed */
 }
@@ -192,7 +193,7 @@ img {
     flex-direction: column; /* Stack icon and text in a column */
     align-items: center; /* Center items horizontally */
     border-radius: 10px;
-    background-color: #A9B388;
+    background-color: #9B9BF1;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
     padding: 1px; /* Adjust padding as needed */
 }
@@ -203,9 +204,51 @@ img {
     flex-direction: column; /* Stack icon and text in a column */
     align-items: center; /* Center items horizontally */
     border-radius: 10px;
-    background-color: #A9B388;
+    background-color: #9B9BF1;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
     padding: 1px; /* Adjust padding as needed */
+}
+
+#back_button {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #9B9BF1;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+    padding: 1px;
+}
+
+#redu_button {
+    width: 30px;
+    height: 30px;
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack icon and text in a column */
+    align-items: center; /* Center items horizontally */
+    border-radius: 10px;
+    background-color: #9B9BF1;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+    padding: 1px; /* Adjust padding as needed */
+    margin-bottom: 5px;
+    
+}
+
+#undo_button {
+    width: 30px;
+    height: 30px;
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack icon and text in a column */
+    align-items: center; /* Center items horizontally */
+    border-radius: 10px;
+    background-color: #9B9BF1;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+    padding: 1px; /* Adjust padding as needed */
+}
+
+#small-button-icon {
+    width: 16px;
+    height: 16px;
 }
 
 #button-icon {
@@ -221,9 +264,9 @@ img {
     color: #FEFAE0;
 }
 
-#merge_button:hover #tb-btn-text, #extract_button:hover #tb-btn-text, #save_button:hover #tb-btn-text {
-    background-color: #A9B388;
-    color: #5F6F52;
+#merge_button:hover #tb-btn-text, #extract_button:hover #tb-btn-text, #save_button:hover #tb-btn-text, #back_button:hover #tb-btn-text, #redu_button:hover #tb-btn-text #undo_button:hover #tb-btn-text{
+    /* background-color: #6464DC; */
+    color: #3333f8;
     margin: 2px;
 }
 
@@ -237,6 +280,9 @@ img {
     box-shadow: 0 0px 0px rgba(0, 0, 0, 0.0);
 }
 
+#back_button:active{
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.0);
+}
 
 button {
     all: unset;
@@ -246,4 +292,59 @@ button {
 .sidebar img {
     width: 159px;
     height: 206px;
+}
+
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.98); /* Use a semi-transparent background */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    display: none; /* Initially hide the loading screen */
+}
+
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid #3498db; /* Set the color of the spinner */
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#back-button-container {
+    display: inline-block;
+    float: left;
+}
+
+#small-button-container {
+    display: inline-block;
+    float: left;
+    margin: 2px 5px;
+}
+
+#menu-button {
+    display: inline-block;
+    background: radial-gradient(circle at center, #ffd900, #f65600);
+    float: left;
+    border-radius: 10px;
+    margin: 2px 10px 2px 2px;
+}
+
+#logo-icon {
+    width: 48px;
+    height: 48px;
 }

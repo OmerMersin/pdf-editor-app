@@ -6,6 +6,8 @@
     <title>Login Form</title>
     <link rel="stylesheet" href="register.css">
     <script src="https://kit.fontawesome.com/f1490aeffb.js" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-storage.js"></script>
+
 </head>
 <body>
     <div class="wrapper">
@@ -39,7 +41,8 @@
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js";
-    import { getAuth, createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+    import { getStorage, ref, uploadString } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-storage.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -60,7 +63,7 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const auth = getAuth();
-    console.log(app);
+    const storage = getStorage();
 
     
 
@@ -77,7 +80,16 @@
           const user = userCredential.user;
           console.log(user);
           alert("Registration successfully!!");
-          // ...
+          window.location.href = "index.html";
+          var requestOptions = {
+            method: 'POST',
+            redirect: 'follow'
+            };
+
+            fetch(`http://localhost:8080/createFolder/${user.uid}`, requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
         })
         .catch((error) => {
           const errorCode = error.code;

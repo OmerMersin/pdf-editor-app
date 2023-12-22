@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOTUS PDF</title>
+<!-- Diğer Firebase kütüphaneleri de buraya eklenebilir -->
+
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.11.0/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.11.0/firebase-auth.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://kit.fontawesome.com/f1490aeffb.js" crossorigin="anonymous"></script>
+    <script src="index.js"></script>
+    <script>
+        function logout() {
+            let confirmExit = confirm("Çıkış yapmak istediğinizden emin misiniz?");
+            if (confirmExit) {
+                window.location.href = "index.html";
+            } else {
+                window.location.href = "loginIndex.html";
+            }
+        }
+    </script>
+
+</head>
+<body class="body">
+    <header>
+        <div class="navbar">
+                <div class="logo">
+                    <h2><a href='#'>LOTUS PDF</a></h2>
+                </div>
+                <div class="header-menu">
+                    <ul class="nav-links">
+                        <li><a href='#'>MERGE PDF</a></li>
+                        <li><a href='#'>EXTRACT PAGES</a></li>
+                        <li class="dropdown"> <!-- Açılır menü için class ekleniyor -->
+                            <a href="#" class="dropbtn">CONVERT PDF <i class="fas fa-caret-down"></i></a>
+                            <div class="dropdown-content"> <!-- Açılır menü içeriği -->
+                                <a href="#">Tool 1</a>
+                                <a href="#">Tool 2</a>
+                                <a href="#">Tool 3</a>
+                            </div>
+                        </li>
+                        <li class="dropdown"> <!-- Açılır menü için class ekleniyor -->
+                            <a href="#" class="dropbtn">ALL PDF TOOLS <i class="fas fa-caret-down"></i></a>
+                            <div class="dropdown-content"> <!-- Açılır menü içeriği -->
+                                <a href="#">Tool 1</a>
+                                <a href="#">Tool 2</a>
+                                <a href="#">Tool 3</a>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="#" onclick="logout()">Logout</a>
+                    </ul>
+                </div>
+        </div>
+    </header>
+
+    <div class="buyukKutu" style="width: 1250px;">
+        <div class="boxOne">
+            <div class="about">
+                <h2 class="animate__animated animate__bounce">Edit and convert your PDF document easily! Simple and Effective.</h2>
+                <!-- Dosya seçme etiketi -->
+                <label for="dosya" class="dosyaLabel">
+                    <span id="fileSelectBtn">
+                        Choose File
+                    </span> 
+                    <input type="file" name="dosya" id="dosya" accept=".pdf" onchange="uploadFileUser()" style="display: none;"/>    
+                </label>
+                <!-- Dosya adını göstermek için alan -->
+                <div id="fileName" class="file-name"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="userInfo"></div>
+
+
+
+</body>
+<!-- Firebase JS SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.11.0/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.11.0/firebase-auth.js'; 
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-analytics.js";
+    import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-storage.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCSg8iM_Nc-s5ZUC12kqxcZ8D642jZXk04",
+        authDomain: "pdf-editor-5f9cc.firebaseapp.com",
+        databaseURL: "https://pdf-editor-5f9cc-default-rtdb.firebaseio.com",
+        projectId: "pdf-editor-5f9cc",
+        storageBucket: "pdf-editor-5f9cc.appspot.com",
+        messagingSenderId: "982208547663",
+        appId: "1:982208547663:web:d84014efd765c5a894133a",
+        measurementId: "G-490EHCY889"
+    };
+
+    // Firebase uygulamasını başlatma
+    const app = initializeApp(firebaseConfig);
+
+    // Authentication için gerekli referansı alma
+    const auth = getAuth(app);
+
+    // Oturum durumunu izleme
+    onAuthStateChanged(auth, function(user) {
+        if (user) {
+            var userEmail = user.email;
+
+            var userInfoDiv = document.getElementById('userInfo');
+            userInfoDiv.innerHTML = '<p class="user-info-text">Hoş geldiniz, ' + userEmail + '!</p>'; // Kullanıcı bilgilerini içeren mesajı oluşturup userInfoDiv'e yazdırın
+        } else {
+            // Kullanıcı oturumu kapattı veya oturum açmamış
+        }
+    });
+
+    // Dosya seçme işlevi
+
+    // Veritabanına dosya bilgilerini kaydetme işlevi
+    function saveFileToDatabase(snapshot) {
+        // Örnek olarak Firestore kullanıyorsak
+        const db = firebase.firestore();
+        const fileData = {
+            name: snapshot.metadata.name,
+            path: snapshot.metadata.fullPath,
+            // Diğer dosya bilgileri buraya eklenebilir
+        };
+
+        // Firestore koleksiyonuna dosya bilgilerini ekleme
+        db.collection("files").add(fileData)
+            .then((docRef) => {
+                console.log('Dosya bilgileri veritabanına kaydedildi:', docRef.id);
+            })
+            .catch((error) => {
+                console.error('Veritabanına kaydetme hatası:', error);
+            });
+    }
+
+
+    function uploadFileUser() {
+    localStorage.removeItem('lastPdf');
+    const fileInput = document.getElementById('dosya');
+    const file = fileInput.files[0];
+    const fileName = file.name.replace(/\.[^/.]+$/, "");
+
+    if (file) {
+        const formData = new FormData();
+        formData.append('fileName', fileName);
+        formData.append('file', file);
+
+        fetch(`http://localhost:8080/uploadPdfUser/${user.email}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`File upload failed with status: ${response.status}`);
+            }
+            return response.text(); // Parse response as text
+        })
+        .then(data => {
+            console.log('File uploaded successfully:', data);
+
+            // Handle the response text
+            const valueToSend = fileName;
+            localStorage.setItem('dataToSend', valueToSend);
+            localStorage.setItem('lastPdf', fileName);
+
+            // Redirect to edit.html after successful upload
+            window.location.href = 'edit.html';
+        })
+        .catch(error => {
+            console.error('Error uploading file:', error);
+        });
+    } else {
+        console.error('No file selected.');
+    }
+}
+  </script>
+
+
+  
+</html>
+

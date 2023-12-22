@@ -31,7 +31,25 @@
     <title>PDF Viewer</title>
 </head>
 <body>
+<div id="loading-screen">
+    <div class="loading-spinner"></div>
+    <!-- Add loading spinner or message here -->
+    Loading...
+</div>
+
     <div class="toolbar">
+        <div id="menu-button">
+            <a href="index.html"><img id="logo-icon" src="letter-l.png" alt="" srcset=""></a>
+        </div>
+        <div id="back-button-container">
+            <button id="back_button"><img id="button-icon" src="back.png" alt="" srcset=""><span id="tb-btn-text">BACK</span></button>
+        </div>
+
+        <div id="small-button-container">
+            <button id="redu_button"><img id="small-button-icon" src="redo-arrow-symbol.png" alt="" srcset=""><span id="tb-btn-text"></span></button>
+            <button id="undo_button"><img id="small-button-icon" src="undo-circular-arrow.png" alt="" srcset=""><span id="tb-btn-text"></span></button>
+        </div>
+
         <div id="toolbar-button">
             <button id="merge_button"><img id="button-icon" src="file.png" alt="" srcset=""><span id="tb-btn-text">MERGE</span></button>
         </div>
@@ -43,6 +61,8 @@
         <div id="toolbar-button">
             <button id="save_button"><img id="button-icon" src="download.png" alt="" srcset=""><span id="tb-btn-text">SAVE</span></button>
         </div>
+
+
     </div>
 
     <div class="container">

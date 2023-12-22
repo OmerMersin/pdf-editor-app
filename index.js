@@ -27,38 +27,81 @@ function dosyaYukle() {
 
 
 function uploadFile() {
+    localStorage.removeItem('lastPdf');
     const fileInput = document.getElementById('dosya');
     const file = fileInput.files[0];
-    const fileName = file.name.replace(/\.[^/.]+$/, "")
+    const fileName = file.name.replace(/\.[^/.]+$/, "");
 
     if (file) {
         const formData = new FormData();
-        formData.append('fileName', fileName); // Set your desired file name
+        formData.append('fileName', fileName);
         formData.append('file', file);
 
-        // Make a POST request using fetch or XMLHttpRequest
         fetch('http://localhost:8080/uploadPdf', {
             method: 'POST',
             body: formData
         })
-        // .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`File upload failed with status: ${response.status}`);
+            }
+            return response.text(); // Parse response as text
+        })
         .then(data => {
             console.log('File uploaded successfully:', data);
+
+            // Handle the response text
+            const valueToSend = fileName;
+            localStorage.setItem('dataToSend', valueToSend);
+            localStorage.setItem('lastPdf', fileName);
+
+            // Redirect to edit.html after successful upload
+            window.location.href = 'edit.html';
         })
         .catch(error => {
             console.error('Error uploading file:', error);
         });
-
-        const valueToSend = fileName;
-
-        // Store the value in localStorage
-        localStorage.setItem('dataToSend', valueToSend);
-        
-        window.location.href = 'edit.html';
-
-        // window.location.href = 'edit.html';
     } else {
         console.error('No file selected.');
     }
 }
 
+function uploadFileUser(uid) {
+    localStorage.removeItem('lastPdf');
+    const fileInput = document.getElementById('dosya');
+    const file = fileInput.files[0];
+    const fileName = file.name.replace(/\.[^/.]+$/, "");
+
+    if (file) {
+        const formData = new FormData();
+        formData.append('fileName', fileName);
+        formData.append('file', file);
+
+        fetch(`http://localhost:8080/uploadPdfUser/${uid}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`File upload failed with status: ${response.status}`);
+            }
+            return response.text(); // Parse response as text
+        })
+        .then(data => {
+            console.log('File uploaded successfully:', data);
+
+            // Handle the response text
+            const valueToSend = fileName;
+            localStorage.setItem('dataToSend', valueToSend);
+            localStorage.setItem('lastPdf', fileName);
+
+            // Redirect to edit.html after successful upload
+            window.location.href = 'edit.html';
+        })
+        .catch(error => {
+            console.error('Error uploading file:', error);
+        });
+    } else {
+        console.error('No file selected.');
+    }
+}
